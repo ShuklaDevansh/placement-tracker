@@ -22,16 +22,16 @@ const getAllApplications = async (userId, {status, company,sort,page,limit}) => 
         status: 'status ASC'
     };
     const orderBy = sortOptions[sort] || 'applied_date DESC';
-    query += ` ORDER BY ${orderby}`;
+    query += ` ORDER BY ${orderBy}`;
 
     //Pagination
-    const pageNum = parseInt(page) || 1;
+    const pageNum  = parseInt(page)  || 1;
     const limitNum = parseInt(limit) || 20;
-    const offset = (pageNum - 1) * limitNum;
+    const offset   = (pageNum - 1) * limitNum;
     query += ' LIMIT ? OFFSET ?';
-    params.push(limitNum,offset);
+    params.push(limitNum, offset);
 
-    const [rows] = await pool.execute(query, params);
+    const [rows] = await pool.query(query, params);
     return rows;
 };
 
@@ -49,12 +49,12 @@ const countApplications = async(userId, {status, company}) => {
         params.push(`%${company}%`);
     }
 
-    const [rows] = await pool.execute(query, params);
+    const [rows] = await pool.query(query, params);
     return rows[0].total;
 };
 
 // GET ONE (ownership enforced at SQL level)
-const getApplicationById = async (id, userID) =>{
+const getApplicationById = async (id, userId) =>{
     const [rows] = await pool.execute(
         'SELECT * FROM applications WHERE id = ? AND user_id = ?',
         [id, userId]
@@ -63,18 +63,16 @@ const getApplicationById = async (id, userID) =>{
 };
 
 // CREATE
-const createApplication = async (userId, {company_name, role_title,status,applied_date, source, salary_lpa, notes})=> {
-    const [result] = await pool.execute(
-        `INSERT INTO applications
-        (user_id,company_name, role_title, status, applied_date, source, salary_lpa,notes)
-        VALUES (?,?,?,?,?,?,?,?)`,
-        [userId, company_name, role_title, status || 'Applied', applied_date, source || null, salary_lpa || null, notes || null]
-    );
-    return result.insertId;
+const createApplication = async (userId, { company_name, role_title, status, applied_date, source, salary_lpa, notes }) => {
+  const [result] = await pool.execute(
+    'INSERT INTO applications (user_id, company_name, role_title, status, applied_date, source, salary_lpa, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [userId, company_name, role_title, status || 'Applied', applied_date, source || null, salary_lpa || null, notes || null]
+  );
+  return result.insertId;
 };
 
 // UPDATE
-const updateApplication = async (id,userID, fields) => {
+const updateApplication = async (id,userId, fields) => {
     const allowed = ['company_name', 'role_title', 'applied_date','source', 'salary_lpa', 'notes'];
     const updates = [];
     const params = [];
@@ -89,7 +87,7 @@ const updateApplication = async (id,userID, fields) => {
     if (updates.length === 0) return 0;
 
     params.push(id, userId);
-    const [result] = await pool.execute(
+    const [result] = await pool.query(
         `UPDATE applications SET ${updates.join(', ')} WHERE id = ? AND user_id = ?`, params
     );
     return result.affectedRows;
@@ -106,7 +104,7 @@ const deleteApplication = async (id,userId) => {
 //UPDATE STATUS
 const updateStatus = async(id, userId, newStatus) => {
     const [result] = await pool.execute(
-        'UPDATE Applications SET status = ? WHERE id = ? AND user_id = ?',
+        'UPDATE applications SET status = ? WHERE id = ? AND user_id = ?',
         [newStatus, id , userId]
     );
     return result.affectedRows;
