@@ -127,6 +127,40 @@ const getStatusHistory = async (applicationId) => {
     return rows;
 };
 
+// DASHBOARD SUMMARY
+const getDashboardSummary = async (userId) => {
+  const [rows] = await pool.query(
+    `SELECT 
+      COUNT(*) AS total,
+      SUM(CASE WHEN status = 'Applied' THEN 1 ELSE 0 END) AS applied,
+      SUM(CASE WHEN status = 'OA' THEN 1 ELSE 0 END) AS oa,
+      SUM(CASE WHEN status = 'Interview' THEN 1 ELSE 0 END) AS interview,
+      SUM(CASE WHEN status = 'Offer' THEN 1 ELSE 0 END) AS offer,
+      SUM(CASE WHEN status = 'Rejected' THEN 1 ELSE 0 END) AS rejected
+    FROM applications WHERE user_id = ?`,
+    [userId]
+  );
+  return rows[0];
+};
+
+// DASHBOARD MONTHLY
+const getMonthlyApplications = async (userId) => {
+  const [rows] = await pool.query(
+    `SELECT 
+      DATE_FORMAT(applied_date, '%b %Y') AS month,
+      YEAR(applied_date) AS year,
+      MONTH(applied_date) AS month_num,
+      COUNT(*) AS count
+    FROM applications
+    WHERE user_id = ?
+      AND applied_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+    GROUP BY YEAR(applied_date), MONTH(applied_date), DATE_FORMAT(applied_date, '%b %Y')
+    ORDER BY year ASC, month_num ASC`,
+    [userId]
+  );
+  return rows;
+};
+
 module.exports = {
     getAllApplications,
     countApplications,
@@ -136,6 +170,8 @@ module.exports = {
     deleteApplication,
     updateStatus,
     insertStatusHistory,
-    getStatusHistory
+    getStatusHistory,
+    getDashboardSummary,
+    getMonthlyApplications
 
 };

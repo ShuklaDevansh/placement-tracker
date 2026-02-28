@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -13,6 +14,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+
+// ─── Rate Limiting ─────────────────────────────────────────────
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: {
+    success: false,
+    error: 'Too many requests, please try again after 15 minutes.',
+    code: 'RATE_LIMITED'
+  }
+});
+
+app.use('/api/auth', authLimiter);
 
 // ─── Routes ───────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);

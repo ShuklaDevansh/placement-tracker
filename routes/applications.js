@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+const { getAllApplications } = require('../repositories/applicationRepository');
+const { generateCSV }        = require('../utils/csvExport');
+
 const authenticate = require('../middleware/auth');
 const {
   validateCreateApplication,
@@ -42,6 +45,21 @@ router.post('/', validateCreateApplication, async (req, res, next) => {
   try {
     const application = await addApplication(req.user.id, req.body);
     res.status(201).json({ success: true, data: application });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET /api/applications/export/csv
+router.get('/export/csv', async (req, res, next) => {
+  try {
+    const filters = { page: 1, limit: 10000 };
+    const applications = await getAllApplications(req.user.id, filters);
+    const csv = generateCSV(applications);
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="applications.csv"');
+    res.status(200).send(csv);
   } catch (error) {
     next(error);
   }
