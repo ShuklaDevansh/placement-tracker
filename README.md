@@ -37,3 +37,6 @@ A RESTful backend API for tracking internship and job applications during campus
 - `GET /api/dashboard/summary` — Application funnel stats
 - `GET /api/dashboard/monthly` — Monthly application counts
 - `GET /api/applications/export/csv` — Export all as CSV
+
+## Live API
+https://placement-tracker-api-mbva.onrender.com
