@@ -71,6 +71,7 @@ const loadApplications = async () => {
     }
 
     // Render rows
+    console.log('First app id:', applications[0].id);
     applicationsBody.innerHTML = applications.map(app => `
       <tr class="border-b border-gray-800 hover:bg-gray-900">
         <td class="py-3 pr-4 font-medium text-gray-100">${app.company_name}</td>
@@ -82,8 +83,8 @@ const loadApplications = async () => {
           <div class="flex gap-3">
             <a href="/form.html?id=${app.id}"
               class="text-indigo-400 hover:text-indigo-300 text-xs">Edit</a>
-            <button onclick="deleteApplication(${app.id})"
-              class="text-red-400 hover:text-red-300 text-xs">Delete</button>
+            <button data-id="${app.id}" data-action="delete"
+               class="text-red-400 hover:text-red-300 text-xs">Delete</button>
           </div>
         </td>
       </tr>
@@ -106,19 +107,21 @@ const loadApplications = async () => {
   }
 };
 
-// Delete Application
-const deleteApplication = async (id) => {
-  const confirmed = window.confirm('Delete this application?');
-  if (!confirmed) return;
-
-  try {
-    await api.delete(`/applications/${id}`);
-    loadApplications();
-  } catch (err) {
-    errorMsg.textContent = err.message || 'Failed to delete.';
-    errorMsg.classList.remove('hidden');
+// Event Delegation for Delete 
+document.getElementById('applicationsBody').addEventListener('click', async (e) => {
+  if (e.target.dataset.action === 'delete') {
+    const id = e.target.dataset.id;
+    const confirmed = window.confirm('Delete this application?');
+    if (!confirmed) return;
+    try {
+      await api.delete(`/applications/${id}`);
+      loadApplications();
+    } catch (err) {
+      errorMsg.textContent = err.message || 'Failed to delete.';
+      errorMsg.classList.remove('hidden');
+    }
   }
-};
+});
 
 // Filters
 document.getElementById('applyFilters').addEventListener('click', () => {

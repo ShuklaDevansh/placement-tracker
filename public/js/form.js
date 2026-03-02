@@ -1,26 +1,26 @@
- // ── Auth Check ────────────────────────────────────────────────
+// Auth Check 
 if (!localStorage.getItem('token')) {
   window.location.href = '/login.html';
 }
 
-// ── Detect Mode (add vs edit) ─────────────────────────────────
-const params    = new URLSearchParams(window.location.search);
-const editId    = params.get('id');
-const isEdit    = !!editId;
+// Detect Mode (add vs edit) 
+const params = new URLSearchParams(window.location.search);
+const editId = params.get('id');
+const isEdit = !!editId;
 
-// ── Element References ────────────────────────────────────────
-const formTitle   = document.getElementById('formTitle');
-const submitBtn   = document.getElementById('submitBtn');
-const errorMsg    = document.getElementById('errorMsg');
-const successMsg  = document.getElementById('successMsg');
+//  Element References 
+const formTitle  = document.getElementById('formTitle');
+const submitBtn  = document.getElementById('submitBtn');
+const errorMsg   = document.getElementById('errorMsg');
+const successMsg = document.getElementById('successMsg');
 
-// ── Update UI for edit mode ───────────────────────────────────
+//  Update UI for edit mode 
 if (isEdit) {
-  formTitle.textContent  = 'Edit Application';
-  submitBtn.textContent  = 'Save Changes';
+  formTitle.textContent = 'Edit Application';
+  submitBtn.textContent = 'Save Changes';
 }
 
-// ── Helper Functions ──────────────────────────────────────────
+// Helper Functions
 const showError = (msg) => {
   errorMsg.textContent = msg;
   errorMsg.classList.remove('hidden');
@@ -33,7 +33,7 @@ const showSuccess = (msg) => {
   errorMsg.classList.add('hidden');
 };
 
-// ── Prefill form for edit mode ────────────────────────────────
+// Prefill form for edit mode
 const prefillForm = async () => {
   try {
     const res = await api.get(`/applications/${editId}`);
@@ -43,10 +43,12 @@ const prefillForm = async () => {
     document.getElementById('role_title').value   = app.role_title   || '';
     document.getElementById('applied_date').value = app.applied_date
       ? app.applied_date.split('T')[0] : '';
-    document.getElementById('status').value       = app.status       || 'Applied';
-    document.getElementById('source').value       = app.source       || '';
-    document.getElementById('salary_lpa').value   = app.salary_lpa   || '';
-    document.getElementById('notes').value        = app.notes        || '';
+    const statusEl = document.getElementById('status');
+    statusEl.value = app.status || 'Applied';
+    statusEl.dataset.original = app.status || 'Applied';
+    document.getElementById('source').value     = app.source     || '';
+    document.getElementById('salary_lpa').value = app.salary_lpa || '';
+    document.getElementById('notes').value      = app.notes      || '';
   } catch (err) {
     showError('Failed to load application data.');
   }
@@ -54,7 +56,7 @@ const prefillForm = async () => {
 
 if (isEdit) prefillForm();
 
-// ── Form Submit ───────────────────────────────────────────────
+// Form Submit
 document.getElementById('applicationForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -76,6 +78,14 @@ document.getElementById('applicationForm').addEventListener('submit', async (e) 
 
   try {
     if (isEdit) {
+      const originalStatus = document.getElementById('status').dataset.original;
+      const newStatus      = body.status;
+
+      if (originalStatus && originalStatus !== newStatus) {
+        await api.patch(`/applications/${editId}/status`, { status: newStatus });
+      }
+
+      delete body.status;
       await api.put(`/applications/${editId}`, body);
       showSuccess('Application updated successfully.');
     } else {
@@ -97,7 +107,7 @@ document.getElementById('applicationForm').addEventListener('submit', async (e) 
   }
 });
 
-// ── Logout ────────────────────────────────────────────────────
+//  Logout
 document.getElementById('logoutBtn').addEventListener('click', () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
