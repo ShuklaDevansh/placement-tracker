@@ -1,0 +1,128 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Placement Tracker — Applications</title>
+  <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="bg-gray-900 border-b border-gray-700 px-6 py-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <span class="text-base font-semibold text-gray-100">Placement Tracker</span>
+      <div class="flex items-center gap-4">
+        <a href="/applications.html" class="text-sm text-indigo-400">Applications</a>
+        <a href="/dashboard.html" class="text-sm text-gray-400 hover:text-gray-100">Dashboard</a>
+        <span id="navUser" class="text-sm text-gray-400"></span>
+        <button id="logoutBtn"
+          class="text-sm text-red-400 hover:text-red-300">
+          Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="max-w-6xl mx-auto px-6 py-8">
+
+    <!-- Page Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-xl font-semibold text-gray-100">Applications</h1>
+      <a href="/form.html"
+        class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded">
+        + Add Application
+      </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-3 mb-6">
+      <select id="filterStatus"
+        class="bg-gray-800 border border-gray-700 text-sm text-gray-100 rounded px-3 py-2 focus:outline-none focus:border-indigo-500">
+        <option value="">All Statuses</option>
+        <option value="Applied">Applied</option>
+        <option value="OA">OA</option>
+        <option value="Interview">Interview</option>
+        <option value="Offer">Offer</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+
+      <select id="filterSort"
+        class="bg-gray-800 border border-gray-700 text-sm text-gray-100 rounded px-3 py-2 focus:outline-none focus:border-indigo-500">
+        <option value="date_desc">Newest First</option>
+        <option value="date_asc">Oldest First</option>
+        <option value="company">Company A-Z</option>
+        <option value="status">Status</option>
+      </select>
+
+      <input type="text" id="filterCompany" placeholder="Search company..."
+        class="bg-gray-800 border border-gray-700 text-sm text-gray-100 rounded px-3 py-2 focus:outline-none focus:border-indigo-500 w-48" />
+
+      <button id="applyFilters"
+        class="bg-gray-800 border border-gray-700 text-sm text-gray-100 rounded px-4 py-2 hover:bg-gray-700">
+        Apply
+      </button>
+
+      <button id="exportCsvBtn"
+        class="bg-gray-800 border border-gray-700 text-sm text-gray-100 rounded px-4 py-2           hover:bg-gray-700">
+        Export CSV
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMsg"
+      class="hidden mb-4 px-4 py-3 bg-red-900 border border-red-700 text-red-300 text-sm rounded">
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingMsg" class="text-gray-400 text-sm">Loading...</div>
+
+    <!-- Table -->
+    <div id="tableContainer" class="hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-700 text-gray-400 text-left">
+            <th class="pb-3 font-medium">Company</th>
+            <th class="pb-3 font-medium">Role</th>
+            <th class="pb-3 font-medium">Status</th>
+            <th class="pb-3 font-medium">Applied Date</th>
+            <th class="pb-3 font-medium">Source</th>
+            <th class="pb-3 font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="applicationsBody" class="divide-y divide-gray-800">
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16">
+      <p class="text-gray-400 text-sm">No applications yet.</p>
+      <a href="/form.html" class="text-indigo-400 text-sm hover:text-indigo-300 mt-2 inline-block">
+        Add your first application →
+      </a>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pagination" class="hidden flex items-center justify-between mt-6">
+      <span id="paginationInfo" class="text-sm text-gray-400"></span>
+      <div class="flex gap-2">
+        <button id="prevBtn"
+          class="bg-gray-800 border border-gray-700 text-sm text-gray-100 rounded px-3 py-1 hover:bg-gray-700 disabled:opacity-40">
+          Previous
+        </button>
+        <button id="nextBtn"
+          class="bg-gray-800 border border-gray-700 text-sm text-gray-100 rounded px-3 py-1 hover:bg-gray-700 disabled:opacity-40">
+          Next
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/applications.js"></script>
+</body>
+</html>

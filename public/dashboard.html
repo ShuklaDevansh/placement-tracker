@@ -1,0 +1,97 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Placement Tracker — Dashboard</title>
+  <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="bg-gray-900 border-b border-gray-700 px-6 py-4">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <span class="text-base font-semibold text-gray-100">Placement Tracker</span>
+      <div class="flex items-center gap-4">
+        <a href="/applications.html" class="text-sm text-gray-400 hover:text-gray-100">Applications</a>
+        <a href="/dashboard.html" class="text-sm text-indigo-400">Dashboard</a>
+        <span id="navUser" class="text-sm text-gray-400"></span>
+        <button id="logoutBtn" class="text-sm text-red-400 hover:text-red-300">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="max-w-6xl mx-auto px-6 py-8">
+
+    <h1 class="text-xl font-semibold text-gray-100 mb-6">Dashboard</h1>
+
+    <!-- Error Message -->
+    <div id="errorMsg"
+      class="hidden mb-4 px-4 py-3 bg-red-900 border border-red-700 text-red-300 text-sm rounded">
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
+        <p class="text-xs text-gray-400 mb-1">Total</p>
+        <p id="statTotal" class="text-2xl font-semibold text-gray-100">—</p>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
+        <p class="text-xs text-gray-400 mb-1">Applied</p>
+        <p id="statApplied" class="text-2xl font-semibold text-blue-400">—</p>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
+        <p class="text-xs text-gray-400 mb-1">OA</p>
+        <p id="statOA" class="text-2xl font-semibold text-yellow-400">—</p>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
+        <p class="text-xs text-gray-400 mb-1">Interview</p>
+        <p id="statInterview" class="text-2xl font-semibold text-purple-400">—</p>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
+        <p class="text-xs text-gray-400 mb-1">Offer</p>
+        <p id="statOffer" class="text-2xl font-semibold text-green-400">—</p>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
+        <p class="text-xs text-gray-400 mb-1">Rejected</p>
+        <p id="statRejected" class="text-2xl font-semibold text-red-400">—</p>
+      </div>
+
+    </div>
+
+    <!-- Rates Row -->
+    <div class="grid grid-cols-2 gap-4 mb-8">
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
+        <p class="text-xs text-gray-400 mb-1">Offer Rate</p>
+        <p id="statOfferRate" class="text-xl font-semibold text-green-400">—</p>
+      </div>
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
+        <p class="text-xs text-gray-400 mb-1">Rejection Rate</p>
+        <p id="statRejectionRate" class="text-xl font-semibold text-red-400">—</p>
+      </div>
+    </div>
+
+    <!-- Monthly Chart -->
+    <div class="bg-gray-900 border border-gray-700 rounded-lg p-6">
+      <h2 class="text-sm font-medium text-gray-400 mb-4">Applications — Last 6 Months</h2>
+      <div id="chartLoading" class="text-gray-400 text-sm">Loading chart...</div>
+      <div class="hidden" id="chartWrapper" style="height: 200px;">
+        <canvas id="monthlyChart"></canvas>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

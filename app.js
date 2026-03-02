@@ -12,7 +12,21 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 
 // Security Middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc:  ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net"],
+      styleSrc:   ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com"],
+      imgSrc:     ["'self'", "data:"],
+      connectSrc: [
+        "'self'",
+        "http://localhost:3000",
+        "https://placement-tracker-api-mbva.onrender.com"
+      ]
+    }
+  }
+}));
 
 // Core Middleware
 app.use(cors());
