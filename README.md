@@ -70,10 +70,6 @@
 
 ## 🏗️ Architecture
 
-This project follows a strict layered architecture where each layer has one responsibility.
-```
-Route Handler → Validator → Service → Repository → Database
-```
 ```
 placement-tracker/
 ├── config/
@@ -180,8 +176,6 @@ status_history
 INDEX idx_user_status ON applications(user_id, status)
 INDEX idx_user_date   ON applications(user_id, applied_date)
 ```
-
-Both indexes verified with `EXPLAIN` — confirmed `type: ref`, no full table scans.
 
 ---
 
