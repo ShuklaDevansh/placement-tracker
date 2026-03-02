@@ -203,7 +203,8 @@ mysql -u root -p
 CREATE DATABASE placement_tracker;
 USE placement_tracker;
 
-# 5. Run schema (copy from docs/schema.sql or run manually)
+# 5. Run the schema
+mysql -u root -p placement_tracker < docs/schema.sql
 
 # 6. Start development server
 npm run dev
